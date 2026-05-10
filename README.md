@@ -90,7 +90,7 @@ NEXT_PUBLIC_DES_IV=initvect
 
 For this project, the DES key and IV must each be exactly 8 bytes.
 
-These variables use the `NEXT_PUBLIC_` prefix because the encryption demo runs in the browser. This is acceptable for a classroom demonstration only. Real secure systems should not expose secret keys in client-side code.
+These variables use the `NEXT_PUBLIC_` prefix because the encryption demo runs in the browser. The app also includes the same demo values as a fallback so Vercel preview builds do not fail if the variables are not configured yet. This is acceptable for a classroom demonstration only. Real secure systems should not expose secret keys in client-side code.
 
 ## How to Deploy on Vercel
 

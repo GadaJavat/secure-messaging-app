@@ -4,21 +4,24 @@ import { useCallback, useMemo } from "react";
 
 import { decryptDES, encryptDES, type DESConfig } from "@/lib/crypto";
 
-function readDESConfigFromEnv(): DESConfig {
-  const secretKey =
-    process.env.NEXT_PUBLIC_DES_SECRET_KEY ?? process.env.DES_SECRET_KEY;
-  const iv = process.env.NEXT_PUBLIC_DES_IV ?? process.env.DES_IV;
+const DEMO_DES_CONFIG: DESConfig = {
+  secretKey: "deskey12",
+  iv: "initvect",
+};
 
-  if (!secretKey || !iv) {
-    throw new Error(
-      "Missing DES configuration. Add NEXT_PUBLIC_DES_SECRET_KEY and NEXT_PUBLIC_DES_IV to .env.local.",
-    );
+function readDESConfigFromEnv(): DESConfig {
+  const secretKey = process.env.NEXT_PUBLIC_DES_SECRET_KEY;
+  const iv = process.env.NEXT_PUBLIC_DES_IV;
+
+  if (secretKey && iv) {
+    return {
+      secretKey,
+      iv,
+    };
   }
 
-  return {
-    secretKey,
-    iv,
-  };
+  // Classroom fallback so Vercel previews can build even before env vars are set.
+  return DEMO_DES_CONFIG;
 }
 
 export function useDESCrypto() {
