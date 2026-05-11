@@ -34,12 +34,12 @@ function isMessage(value: unknown): value is Message {
   );
 }
 
-function readMessagesFromStorage(): Message[] {
+function readMessagesFromStorage(storageKey: string): Message[] {
   if (typeof window === "undefined") {
     return [];
   }
 
-  const storedMessages = window.localStorage.getItem(MESSAGE_STORAGE_KEY);
+  const storedMessages = window.localStorage.getItem(storageKey);
 
   if (!storedMessages) {
     return [];
@@ -58,13 +58,13 @@ function readMessagesFromStorage(): Message[] {
   }
 }
 
-function writeMessagesToStorage(messages: Message[]) {
+function writeMessagesToStorage(messages: Message[], storageKey: string) {
   if (typeof window === "undefined") {
     return;
   }
 
   try {
-    window.localStorage.setItem(MESSAGE_STORAGE_KEY, JSON.stringify(messages));
+    window.localStorage.setItem(storageKey, JSON.stringify(messages));
   } catch {
     return;
   }
@@ -86,12 +86,14 @@ function createMessage(message: NewMessage): Message {
   };
 }
 
-export function useMessages() {
-  const [messages, setMessages] = useState<Message[]>(readMessagesFromStorage);
+export function useMessages(storageKey = MESSAGE_STORAGE_KEY) {
+  const [messages, setMessages] = useState<Message[]>(() =>
+    readMessagesFromStorage(storageKey),
+  );
 
   useEffect(() => {
-    writeMessagesToStorage(messages);
-  }, [messages]);
+    writeMessagesToStorage(messages, storageKey);
+  }, [messages, storageKey]);
 
   const addMessage = useCallback((message: NewMessage) => {
     const nextMessage = createMessage(message);

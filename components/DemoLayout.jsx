@@ -8,7 +8,7 @@ export default function DemoLayout({
   transmission,
 }) {
   return (
-    <main className="min-h-screen bg-stone-50 px-5 py-8 text-slate-950">
+    <div className="min-h-screen bg-stone-50 px-5 py-8 text-slate-950">
       <section className="mx-auto flex w-full max-w-7xl flex-col gap-6">
         <header className="border-b border-slate-200 pb-5">
           <p className="text-sm font-semibold uppercase tracking-wide text-cyan-700">
@@ -41,6 +41,6 @@ export default function DemoLayout({
 
         {history}
       </section>
-    </main>
+    </div>
   );
 }
