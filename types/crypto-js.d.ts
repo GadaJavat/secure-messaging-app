@@ -1,5 +1,6 @@
 declare module "crypto-js" {
   type WordArray = {
+    sigBytes: number;
     toString: (encoder?: Encoder) => string;
   };
 
@@ -33,6 +34,7 @@ declare module "crypto-js" {
     };
     enc: {
       Base64: Encoder;
+      Hex: Encoder;
       Utf8: Encoder;
     };
     lib: {

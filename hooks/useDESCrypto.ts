@@ -13,15 +13,11 @@ function readDESConfigFromEnv(): DESConfig {
   const secretKey = process.env.NEXT_PUBLIC_DES_SECRET_KEY;
   const iv = process.env.NEXT_PUBLIC_DES_IV;
 
-  if (secretKey && iv) {
-    return {
-      secretKey,
-      iv,
-    };
-  }
-
   // Classroom fallback so Vercel previews can build even before env vars are set.
-  return DEMO_DES_CONFIG;
+  return {
+    secretKey: secretKey || DEMO_DES_CONFIG.secretKey,
+    iv: iv || DEMO_DES_CONFIG.iv,
+  };
 }
 
 export function useDESCrypto() {

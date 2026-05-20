@@ -77,8 +77,9 @@ export default function ReceiverPanel({ messages, onDeleteMessage }) {
       </div>
 
       <p className="mt-2 text-sm leading-6 text-slate-600">
-        The receiver keeps the conversation, sees the stored Base64 ciphertext,
-        and can decrypt or hide each message with the shared secret key.
+        The receiver keeps the conversation, sees the received Base64
+        IV/ciphertext payload, and can decrypt or hide each message with the
+        shared secret key.
       </p>
 
       {orderedMessages.length > 0 ? (
@@ -108,7 +109,7 @@ export default function ReceiverPanel({ messages, onDeleteMessage }) {
                 </div>
 
                 <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Received Base64 Ciphertext
+                  Received Base64 IV/Ciphertext Payload
                 </p>
                 <p className="mt-1 break-all rounded-md bg-slate-950 p-3 font-mono text-sm text-cyan-100">
                   {ciphertext}

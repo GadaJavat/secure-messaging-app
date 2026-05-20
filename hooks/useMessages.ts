@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 const MESSAGE_STORAGE_KEY = "secure-messaging-app:messages";
+const LEGACY_MESSAGE_STORAGE_KEYS = ["secure-messaging-app:live-messages"];
 
 export type Message = {
   id: string;
@@ -34,7 +35,7 @@ function isMessage(value: unknown): value is Message {
   );
 }
 
-function readMessagesFromStorage(storageKey: string): Message[] {
+function readMessagesForStorageKey(storageKey: string): Message[] {
   if (typeof window === "undefined") {
     return [];
   }
@@ -58,6 +59,53 @@ function readMessagesFromStorage(storageKey: string): Message[] {
   }
 }
 
+function mergeMessages(messages: Message[]) {
+  const messageById = new Map<string, Message>();
+
+  for (const message of messages) {
+    if (!messageById.has(message.id)) {
+      messageById.set(message.id, message);
+    }
+  }
+
+  return Array.from(messageById.values()).sort(
+    (firstMessage, secondMessage) =>
+      firstMessage.createdAt.localeCompare(secondMessage.createdAt),
+  );
+}
+
+function clearLegacyMessageStorage() {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  try {
+    for (const legacyStorageKey of LEGACY_MESSAGE_STORAGE_KEYS) {
+      window.localStorage.removeItem(legacyStorageKey);
+    }
+  } catch {
+    return;
+  }
+}
+
+function readMessagesFromStorage(storageKey: string): Message[] {
+  const messages = readMessagesForStorageKey(storageKey);
+
+  if (storageKey !== MESSAGE_STORAGE_KEY) {
+    return messages;
+  }
+
+  const legacyMessages = LEGACY_MESSAGE_STORAGE_KEYS.flatMap((legacyStorageKey) =>
+    readMessagesForStorageKey(legacyStorageKey),
+  );
+
+  if (legacyMessages.length === 0) {
+    return messages;
+  }
+
+  return mergeMessages([...messages, ...legacyMessages]);
+}
+
 function writeMessagesToStorage(messages: Message[], storageKey: string) {
   if (typeof window === "undefined") {
     return;
@@ -65,6 +113,10 @@ function writeMessagesToStorage(messages: Message[], storageKey: string) {
 
   try {
     window.localStorage.setItem(storageKey, JSON.stringify(messages));
+
+    if (storageKey === MESSAGE_STORAGE_KEY) {
+      clearLegacyMessageStorage();
+    }
   } catch {
     return;
   }
@@ -87,13 +139,25 @@ function createMessage(message: NewMessage): Message {
 }
 
 export function useMessages(storageKey = MESSAGE_STORAGE_KEY) {
-  const [messages, setMessages] = useState<Message[]>(() =>
-    readMessagesFromStorage(storageKey),
-  );
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [loadedStorageKey, setLoadedStorageKey] = useState<string | null>(null);
 
   useEffect(() => {
+    const loadMessages = window.setTimeout(() => {
+      setMessages(readMessagesFromStorage(storageKey));
+      setLoadedStorageKey(storageKey);
+    }, 0);
+
+    return () => window.clearTimeout(loadMessages);
+  }, [storageKey]);
+
+  useEffect(() => {
+    if (loadedStorageKey !== storageKey) {
+      return;
+    }
+
     writeMessagesToStorage(messages, storageKey);
-  }, [messages, storageKey]);
+  }, [loadedStorageKey, messages, storageKey]);
 
   const addMessage = useCallback((message: NewMessage) => {
     const nextMessage = createMessage(message);

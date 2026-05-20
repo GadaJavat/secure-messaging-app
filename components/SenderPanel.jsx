@@ -8,9 +8,11 @@ const configItems = [
   ["Algorithm", "DES"],
   ["Mode", "CBC"],
   ["Padding", "PKCS7"],
-  ["Ciphertext Format", "Base64"],
+  ["Transit Display", "Byte pairs"],
+  ["Panel Display", "Base64 payload"],
+  ["Stored Format", "Base64 payload"],
   ["Key", "Shared secret, hidden"],
-  ["IV", "Used for CBC mode"],
+  ["IV", "Fresh random bytes per message"],
 ];
 
 export default function SenderPanel({ onSend }) {
@@ -55,7 +57,8 @@ export default function SenderPanel({ onSend }) {
           ))}
         </dl>
         <p className="mt-3 text-xs leading-5 text-slate-500">
-          The IV is required for CBC mode. The key is the secret value that must
+          CBC mode uses a new IV for every message, so repeated plaintext can
+          produce different ciphertext. The key is the secret value that must
           stay hidden from the attacker.
         </p>
       </div>
@@ -63,8 +66,15 @@ export default function SenderPanel({ onSend }) {
       {sentCiphertext ? (
         <div className="mt-4 border-t border-emerald-100 pt-4">
           <p className="text-sm font-medium text-emerald-800">
-            The plaintext was encrypted using DES-CBC. Only the Base64
-            ciphertext is transmitted or stored.
+            The plaintext was encrypted using DES-CBC. The transmission view
+            shows the IV and ciphertext bytes, while storage keeps those bytes
+            as Base64.
+          </p>
+          <p className="mt-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
+            Generated Base64 IV/Ciphertext Payload
+          </p>
+          <p className="mt-1 break-all rounded-md border border-emerald-200 bg-emerald-50 p-3 font-mono text-sm text-emerald-950">
+            {sentCiphertext}
           </p>
         </div>
       ) : null}

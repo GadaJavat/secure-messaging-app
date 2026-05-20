@@ -4,9 +4,6 @@ import { useState } from "react";
 
 import { useDESCrypto } from "@/hooks/useDESCrypto";
 import { useMessageForm } from "@/hooks/useMessageForm";
-import { useMessages } from "@/hooks/useMessages";
-
-const LIVE_STORAGE_KEY = "secure-messaging-app:live-messages";
 
 const users = [
   { id: "user-a", name: "User A" },
@@ -288,8 +285,8 @@ function LiveUserCard({
   );
 }
 
-export default function LiveMessagingApp() {
-  const { addMessage, deleteMessage, messages } = useMessages(LIVE_STORAGE_KEY);
+export default function LiveMessagingApp({ messageStore }) {
+  const { addMessage, deleteMessage, messages } = messageStore;
   const { encrypt } = useDESCrypto();
 
   const handleSendMessage = (sender, plaintext) => {
@@ -313,8 +310,9 @@ export default function LiveMessagingApp() {
         </h2>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">
           Both users share the DES key for this classroom demo. Messages are
-          stored as Base64 ciphertext, and each user can decrypt, hide, or
-          delete messages from their own conversation panel.
+          stored as a Base64 IV/ciphertext payload in the same conversation used
+          by the demo tab, and each user can decrypt, hide, or delete messages
+          from their own conversation panel.
         </p>
       </div>
 

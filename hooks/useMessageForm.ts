@@ -56,8 +56,8 @@ export function useMessageForm(options: UseMessageFormOptions = {}) {
         return;
       }
 
-      // Only the cleaned message is handed to the next layer, such as DES encryption.
-      await onSubmit?.(message.trim());
+      // Preserve every user-entered character once the message is known to be non-empty.
+      await onSubmit?.(message);
       resetForm();
     },
     [message, onSubmit, resetForm],

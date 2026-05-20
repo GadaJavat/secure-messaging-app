@@ -9,10 +9,9 @@ import ReceiverPanel from "@/components/ReceiverPanel";
 import SenderPanel from "@/components/SenderPanel";
 import TransmissionCard from "@/components/TransmissionCard";
 import { useDESCrypto } from "@/hooks/useDESCrypto";
-import { useMessages } from "@/hooks/useMessages";
 
-export default function DemoVersion() {
-  const { messages, addMessage, deleteMessage } = useMessages();
+export default function DemoVersion({ messageStore }) {
+  const { messages, addMessage, deleteMessage } = messageStore;
   const { encrypt } = useDESCrypto();
   const latestMessage = messages.at(-1) ?? null;
   const latestCiphertext = latestMessage?.ciphertext ?? latestMessage?.text ?? "";

@@ -1,7 +1,8 @@
 const flowSteps = [
   "Plaintext",
+  "Random IV",
   "DES-CBC Encryption",
-  "Base64 Ciphertext",
+  "Cipher Bytes",
   "DES-CBC Decryption",
   "Plaintext",
 ];
@@ -20,9 +21,10 @@ export default function InfoBanner() {
         ))}
       </div>
       <p className="mt-2 text-sm leading-6 text-slate-700">
-        The sender encrypts readable text into Base64 ciphertext. The receiver
-        decrypts it with the shared secret key. The attacker can intercept the
-        same ciphertext, but cannot read the message without that key.
+        The sender uses a fresh IV and encrypts readable text into ciphertext
+        bytes. The receiver decrypts them with the shared secret key. The
+        attacker can intercept the same bytes, but cannot read the message
+        without that key.
       </p>
     </section>
   );

@@ -1,4 +1,8 @@
+import { encodeCiphertextAsBytePairs } from "@/lib/crypto";
+
 export default function TransmissionCard({ ciphertext }) {
+  const bytePairCiphertext = encodeCiphertextAsBytePairs(ciphertext);
+
   return (
     <section className="w-full rounded-lg border border-cyan-300 bg-white p-5 shadow-sm">
       <div className="text-center">
@@ -6,16 +10,17 @@ export default function TransmissionCard({ ciphertext }) {
           Shared Transmission
         </p>
         <h2 className="mt-1 text-xl font-semibold tracking-normal text-slate-950">
-          Base64 Ciphertext in Transit
+          IV + Ciphertext in Transit
         </h2>
         <p className="mx-auto mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-          This single ciphertext is the message moving across the channel. The
-          receiver receives it, and the attacker may intercept the same value.
+          This view shows the random IV and encrypted payload as byte pairs
+          moving across the channel. The receiver receives it, and the attacker
+          may intercept it.
         </p>
       </div>
 
       <p className="mt-4 min-h-16 break-all rounded-md border border-slate-200 bg-slate-950 p-4 font-mono text-sm text-cyan-100">
-        {ciphertext || "Encrypt a message to generate real DES-CBC ciphertext."}
+        {bytePairCiphertext || "Encrypt a message to generate real DES-CBC byte pairs."}
       </p>
 
       <div className="mt-4 grid gap-2 text-center text-xs font-semibold uppercase tracking-wide text-slate-600">

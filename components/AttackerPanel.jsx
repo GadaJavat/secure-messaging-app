@@ -34,13 +34,13 @@ export default function AttackerPanel({ ciphertext }) {
         Step 3: Attacker Intercepts
       </h2>
       <p className="mt-2 text-sm leading-6 text-slate-600">
-        The attacker may see the same transmitted ciphertext, but does not have
-        the shared secret key.
+        The attacker may see the same Base64 IV/ciphertext payload, but does not
+        have the shared secret key.
       </p>
 
       <div className="mt-4">
         <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          Intercepted Base64 Ciphertext
+          Intercepted Base64 IV/Ciphertext Payload
         </p>
         <p className="mt-2 min-h-20 break-all rounded-md border border-amber-200 bg-amber-50 p-3 font-mono text-sm text-amber-950">
           {ciphertext || "Nothing intercepted yet..."}
